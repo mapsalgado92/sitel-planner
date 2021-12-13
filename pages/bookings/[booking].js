@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb"
 import Head from "next/head"
 import { useRouter } from "next/router"
-import Image from "next/image"
 
 import clientPromise from "../../lib/mongodb"
 
@@ -41,7 +40,7 @@ const Booking = ({ booking, event }) => {
       <div className="my-auto has-text-centered">
         <div className="columns is-flex-wrap-wrap is-justify-content-center">
           <div className="column is-two-thirds">
-            <h1 className="is-size-3">
+            <h1 className="is-size-4">
               Please <span className="has-text-danger">BOOKMARK</span> this page
               or <span className="has-text-danger">COPY THE LINK</span> so you
               can access it in the future!

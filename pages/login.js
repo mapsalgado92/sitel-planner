@@ -30,7 +30,7 @@ const Events = ({ events }) => {
             <div className="field">
               <label class="label">Password</label>
               <div className="control">
-                <input className="input" type="text" placeholder="Text input" />
+                <input className="input" type="text" placeholder="Password" />
               </div>
             </div>
             <br />

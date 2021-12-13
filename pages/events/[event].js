@@ -19,10 +19,14 @@ const Event = ({ event }) => {
     slot: null,
   })
 
+  const [check, setCheck] = useState({})
+
   const available = useAvailable(event && event._id)
 
   const handleChange = (e, fieldName) => {
     e.preventDefault()
+
+    setCheck({ ...check, [fieldName]: null })
 
     setPayload({ ...payload, [fieldName]: e.target.value })
   }
@@ -34,65 +38,77 @@ const Event = ({ event }) => {
   const handleBook = async () => {
     //Field Verification
     let missingField = !selected.slot
+    let missingCheck = false
     event.fields.forEach((field) => {
       if (!payload[field.name]) {
         missingField = true
+      } else if (field.check && !check[field.name]) {
+        missingCheck = true
       }
     })
 
     if (missingField) {
       alert("Please fill all the fields on the Information section.")
-    } else {
-      //Post booking
-
-      let post = {
-        event,
-        payload,
-        date: selected.slot,
-      }
-
-      let request = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(post),
-      }
-
-      fetch("/api/bookings/book", request)
-        .then((response) => {
-          return response.json()
-        })
-        .then((data) => {
-          if (data.insert) {
-            alert(data.message + "\nBooking ID: " + data.insert.insertedId)
-            console.log(data.message)
-            available.updateAvailable(event._id)
-            setTimeout(
-              () => router.push("/bookings/" + data.insert.insertedId),
-              200
-            )
-          } else if (data.verify) {
-            alert(
-              data.message +
-                "\n> Unique: " +
-                (data.verify.unique ? "OK" : "NO") +
-                "\n>>> Duplicate Status: " +
-                (data.verify.uniqueBooking
-                  ? data.verify.uniqueBooking.status
-                  : "none") +
-                "\n> Time: " +
-                (data.verify.time ? "OK" : "NO") +
-                "\n> Availability: " +
-                (data.verify.availability ? "OK" : "NO")
-            )
-            console.log(data.message)
-          } else {
-            alert("Something went wrong...")
-          }
-        })
-        .catch()
+      return -1
+    } else if (missingCheck) {
+      alert("Please make sure to CHECK all eligible fields")
+      return -1
     }
+
+    //Post booking
+
+    let post = {
+      event,
+      payload,
+      date: selected.slot,
+    }
+
+    let request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(post),
+    }
+    fetch("/api/bookings/book", request)
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data.insert) {
+          alert(data.message + "\nBooking ID: " + data.insert.insertedId)
+          console.log(data.message)
+          available.updateAvailable(event._id)
+          setTimeout(
+            () => router.push("/bookings/" + data.insert.insertedId),
+            200
+          )
+        } else if (data.verify) {
+          alert(
+            data.message +
+              "\n> Unique: " +
+              (data.verify.unique
+                ? "OK"
+                : "NO: Another booking exists with same unique field...") +
+              "\n>>> Duplicate Status: " +
+              (data.verify.uniqueBooking
+                ? data.verify.uniqueBooking.status
+                : "none") +
+              "\n> Time: " +
+              (data.verify.time
+                ? "OK"
+                : "NO: Booking can't be set so close to the date...") +
+              "\n> Availability: " +
+              (data.verify.availability
+                ? "OK"
+                : "NO: Slot is no longer available...")
+          )
+          console.log(data.message)
+        } else {
+          alert("Something went wrong...")
+        }
+      })
+      .catch()
   }
 
   return (
@@ -109,11 +125,13 @@ const Event = ({ event }) => {
         ></SlotsModal>
         <div className="card has-background-link-dark has-text-white p-6">
           <div className=" is-justify-content-center">
-            <h1 className="is-size-3 has-text-weight-bold">{event.title}</h1>
+            <h1 className="is-size-3 has-text-weight-bold">
+              {event && event.title}
+            </h1>
           </div>
           <br />
           <div>
-            <p className="is-size-6">{event.long_description}</p>
+            <p className="is-size-6">{event && event.long_description}</p>
           </div>
         </div>
 
@@ -128,14 +146,69 @@ const Event = ({ event }) => {
                 case "text":
                   return (
                     <div className="column" key={"field-" + index}>
-                      <label className="label">{field.name}</label>
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder={field.name}
-                        value={payload[field.name] || ""}
-                        onChange={(e) => handleChange(e, field.name)}
-                      />
+                      <div className="field">
+                        <label className="label">{field.name}</label>
+                        <div className="control field has-addons">
+                          <input
+                            className="input"
+                            type="text"
+                            placeholder={field.name}
+                            value={payload[field.name] || ""}
+                            onChange={(e) => handleChange(e, field.name)}
+                          />
+
+                          {field.check && (
+                            <>
+                              <input
+                                className={`input ml-2 ${
+                                  check[field.name]
+                                    ? "has-text-link"
+                                    : "has-text-danger"
+                                }`}
+                                type="text"
+                                disabled={true}
+                                value={check[field.name] || "unchecked"}
+                              />
+                              <button
+                                className="ml-2 button is-info is-outlined"
+                                type="button"
+                                onClick={() => {
+                                  fetch(field.check.endpoint)
+                                    .then((res) => res.json())
+                                    .then((data) => {
+                                      console.log(data)
+                                      let value = data.find(
+                                        (item) =>
+                                          item[field.check.key] ===
+                                          payload[field.name]
+                                      )
+                                      if (value) {
+                                        setCheck({
+                                          ...check,
+                                          [field.name]:
+                                            value[field.check.output],
+                                        })
+                                      } else {
+                                        setCheck({
+                                          ...check,
+                                          [field.name]: null,
+                                        })
+                                      }
+                                    })
+                                    .catch(() => {
+                                      setCheck({
+                                        ...check,
+                                        [field.name]: null,
+                                      })
+                                    })
+                                }}
+                              >
+                                Check {field.name}
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )
                 case "selection":
