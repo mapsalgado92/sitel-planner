@@ -1,6 +1,6 @@
 const SlotsModal = ({ active, toggle, daily, selectSlot }) => {
   return (
-    <div className={`modal ${active ? "is-active" : ""}`}>
+    <div className={`modal has-text-centered ${active ? "is-active" : ""}`}>
       <div className="modal-background"></div>
       <div className="modal-card">
         <header className="modal-card-head">

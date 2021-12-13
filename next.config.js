@@ -1,5 +1,5 @@
 module.exports = {
   images: {
-    domains: ["bulma.io", "upload.wikimedia.org"],
+    domains: ["upload.wikimedia.org", "ailintattoo.sirv.com"],
   },
 }

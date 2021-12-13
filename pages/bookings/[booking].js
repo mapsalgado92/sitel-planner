@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb"
 import Head from "next/head"
 import { useRouter } from "next/router"
+import Image from "next/image"
 
 import clientPromise from "../../lib/mongodb"
 
@@ -37,9 +38,17 @@ const Booking = ({ booking, event }) => {
       <Head>
         <title>Sitel Planner | Booking</title>
       </Head>
-      <div className="is-align-self-center mt-auto mb-auto has-text-centered">
-        <div className="columns">
-          <div className="column is-fullwidth px-6 pb-6 pt-4 card">
+      <div className="my-auto has-text-centered">
+        <div className="columns is-flex-wrap-wrap is-justify-content-center">
+          <div className="column is-two-thirds">
+            <h1 className="is-size-3">
+              Please <span className="has-text-danger">BOOKMARK</span> this page
+              or <span className="has-text-danger">COPY THE LINK</span> so you
+              can access it in the future!
+            </h1>
+          </div>
+
+          <div className="column is-two-thirds px-6 pb-6 pt-4 card">
             {booking ? (
               <div>
                 <p className="is-size-5 has-text-right pb-4">

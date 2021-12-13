@@ -19,10 +19,11 @@ export default async function handler(req, res) {
         .collection(collection)
         .find(findQuery ? findQuery : {})
         .toArray()
-      console.log(`Item Fetched from ${db} > ${collection} `)
+      console.log(`Item Fetched from ${db} > ${collection}`)
       switch (output.length) {
         case 0:
           res.status(404).json({ message: "No items found :O" })
+          break
         default:
           res.status(200).json(output)
       }

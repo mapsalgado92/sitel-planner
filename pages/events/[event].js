@@ -113,12 +113,12 @@ const Event = ({ event }) => {
           </div>
           <br />
           <div>
-            <p className="is-size-5">{event.long_description}</p>
+            <p className="is-size-6">{event.long_description}</p>
           </div>
         </div>
 
         <br />
-        <h1 className="is-size-2">Information</h1>
+        <h1 className="is-size-3">Information</h1>
         <br />
 
         <div className="columns is-flex-wrap-wrap">
@@ -169,7 +169,7 @@ const Event = ({ event }) => {
         </div>
 
         <br />
-        <h1 className="is-size-2">Slots</h1>
+        <h1 className="is-size-3">Slots</h1>
 
         <br />
         {selected.slot && (
@@ -243,11 +243,6 @@ const Event = ({ event }) => {
               </div>
             ))}
         </div>
-        <br />
-
-        <br />
-
-        <br />
       </div>
     </>
   )
