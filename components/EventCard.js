@@ -19,17 +19,14 @@ const EventCard = ({ event }) => {
       </div>
       <div className="card-content">
         <div className="content">
-          <p className="is-size-5">{event.short_description}</p>
-          <span className="has-text-link">
-            {event.start_date.split("T")[0]}
-          </span>
-          {" to "}
-          <span className="has-text-link">{event.end_date.split("T")[0]}</span>
+          <p className="is-size-6">{event.short_description}</p>
         </div>
 
         <Link href={`/events/${event._id}`}>
           <a>
-            <button className="button is-fullwidth is-info">Go To Event</button>
+            <button className="button is-fullwidth is-size-5 is-info">
+              {event.cta ? event.cta : "Go To Event"}
+            </button>
           </a>
         </Link>
       </div>

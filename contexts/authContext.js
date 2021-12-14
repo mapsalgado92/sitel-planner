@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         Cookies.set("user", JSON.stringify({ id: event }), { expires: 1 })
         alert(data.message)
       })
-      .catch((err) => {})
+      .catch((err) => alert("Something went wrong!"))
   }
 
   const logout = () => {
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ logged, user, login }}>
+    <AuthContext.Provider value={{ logged, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
