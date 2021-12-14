@@ -87,6 +87,8 @@ const Booking = ({ booking, event }) => {
                   </span>
                 </p>
                 <br />
+                <p>{event.short_description}</p>
+                <br />
                 <button
                   className="button is-danger has-text-weight-bold"
                   onClick={() => handleCancel()}
