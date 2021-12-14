@@ -282,7 +282,7 @@ const Event = ({ event }) => {
               >
                 <div className="card">
                   <div className="card-header card-header-title">
-                    {daily.date.split("-").reverse().join("-")}
+                    {daily.date && daily.date.split("-").reverse().join("-")}
                     <span
                       className={`tag ml-auto ${
                         new Date(daily.date).getDay() === 6

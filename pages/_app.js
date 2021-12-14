@@ -6,6 +6,10 @@ import Head from "next/head"
 
 import PageLayout from "../layout/pageLayout"
 
+import { AuthProvider } from "../contexts/authContext"
+
+import { CookiesProvider } from "react-cookie"
+
 function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -20,9 +24,13 @@ function MyApp({ Component, pageProps }) {
           rel="stylesheet"
         ></link>
       </Head>
-      <PageLayout>
-        <Component {...pageProps} />
-      </PageLayout>
+      <CookiesProvider>
+        <AuthProvider>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
+        </AuthProvider>
+      </CookiesProvider>
     </>
   )
 }

@@ -1,8 +1,14 @@
 import Head from "next/head"
+import { useState } from "react"
+import { useAuth } from "../contexts/authContext"
 
 import clientPromise from "../lib/mongodb"
 
-const Events = ({ events }) => {
+const Login = ({ events }) => {
+  const [selected, setSelected] = useState({})
+
+  const auth = useAuth()
+
   return (
     <>
       <Head>
@@ -15,12 +21,19 @@ const Events = ({ events }) => {
             <br />
 
             <div className="field">
-              <label class="label">Event</label>
+              <label className="label">Event</label>
               <div className="select is-fullwidth">
-                <select>
+                <select
+                  onChange={(e) =>
+                    setSelected({ ...selected, event: e.target.value })
+                  }
+                >
+                  {!selected.event && (
+                    <option value={null}>{"Select Event"}</option>
+                  )}
                   {events &&
                     events.map((event) => (
-                      <option onChange={2} value={event._id}>
+                      <option key={event._id + "-select"} value={event._id}>
                         {event.title}
                       </option>
                     ))}
@@ -28,13 +41,30 @@ const Events = ({ events }) => {
               </div>
             </div>
             <div className="field">
-              <label class="label">Password</label>
+              <label className="label">Password</label>
               <div className="control">
-                <input className="input" type="text" placeholder="Password" />
+                <input
+                  className="input"
+                  onChange={(e) =>
+                    setSelected({ ...selected, password: e.target.value })
+                  }
+                  value={selected.password || ""}
+                  type="text"
+                  placeholder="Password"
+                />
               </div>
             </div>
             <br />
-            <button className="button is-primary" type="button">
+            <button
+              className="button is-primary"
+              onClick={() =>
+                auth.login({
+                  event: selected.event,
+                  password: selected.password,
+                })
+              }
+              type="button"
+            >
               LOG IN
             </button>
           </div>
@@ -44,7 +74,7 @@ const Events = ({ events }) => {
   )
 }
 
-export default Events
+export default Login
 
 export async function getServerSideProps(context) {
   try {

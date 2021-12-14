@@ -2,8 +2,12 @@ import Link from "next/link"
 
 import { useState } from "react"
 
+import { useAuth } from "../contexts/authContext"
+
 const Header = () => {
   const [isActive, setisActive] = useState(false)
+  const auth = useAuth()
+
   return (
     <nav
       className="navbar container"
@@ -43,6 +47,13 @@ const Header = () => {
           <Link href="/events">
             <a className="navbar-item ml-3 is-size-5">Events</a>
           </Link>
+          {auth.logged && (
+            <Link href={"/admin/" + auth.user.id}>
+              <a className="navbar-item ml-3 is-danger is-size-5">
+                Admin {auth.user.id}
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
