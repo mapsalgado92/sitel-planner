@@ -55,9 +55,11 @@ const Booking = ({ booking, event }) => {
                     className={`tag ${
                       booking.status === "cancelled"
                         ? "is-danger"
-                        : booking.status === "delivered"
+                        : booking.status === "pending"
                         ? "is-warning"
-                        : "is-primary"
+                        : booking.status === "booked"
+                        ? "is-primary"
+                        : "is-dark"
                     }`}
                   >
                     {booking.status}
@@ -88,7 +90,7 @@ const Booking = ({ booking, event }) => {
                 <button
                   className="button is-danger has-text-weight-bold"
                   onClick={() => handleCancel()}
-                  disabled={booking.status === "cancelled"}
+                  disabled={booking.closed}
                 >
                   Cancel Booking
                 </button>

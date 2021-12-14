@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
     const bookings = await database
       .collection("bookings")
-      .find({ event: eventId, status: { $ne: "cancelled" } })
+      .find({ event: eventId, closed: false })
       .sort({ date: 1 })
       .toArray()
 

@@ -95,7 +95,7 @@ export default async function handler(req, res) {
 
     let unique = await database
       .collection("bookings")
-      .find({ status: { $ne: "cancelled" }, $or: payloadQueries })
+      .find({ closed: false, $or: payloadQueries })
       .toArray()
 
     console.log("UNIQUE", unique)
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
       let newBooking = {
         payload: payload,
         created: new Date().toISOString(),
-        delivered: null,
+        closed: false,
         status: "booked",
         event: event._id,
         process: authCheck ? "admin-book" : "book",

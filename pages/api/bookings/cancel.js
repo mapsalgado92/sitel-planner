@@ -23,13 +23,13 @@ export default async function handler(req, res) {
       .collection("bookings")
       .findOne({ _id: ObjectId(bookingId) })
 
-    if (booking && booking.status === "booked") {
+    if (booking && !booking.closed) {
       try {
         const update = await database
           .collection("bookings")
           .updateOne(
             { _id: ObjectId(bookingId) },
-            { $set: { status: "cancelled" } }
+            { $set: { status: "cancelled", closed: true } }
           )
         res
           .status(200)
