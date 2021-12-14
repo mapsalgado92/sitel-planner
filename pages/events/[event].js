@@ -119,7 +119,7 @@ const Event = ({ event }) => {
       <Head>
         <title>Sitel Planner | {event && event.title}</title>
       </Head>
-      <div className="has-text-left px-4">
+      <div className="has-text-left p-2">
         <SlotsModal
           daily={selected.daily}
           active={selected.daily !== null}
@@ -127,20 +127,20 @@ const Event = ({ event }) => {
           selectSlot={(slot) => setSelected({ daily: null, slot: slot })}
           eventId={event._id}
         ></SlotsModal>
-        <div className="card has-background-link-dark has-text-white p-6">
+        <div className="card has-background-link-dark has-text-white p-4">
           <div className=" is-justify-content-center">
-            <h1 className="is-size-3 has-text-weight-bold">
+            <h1 className="is-size-5 has-text-weight-bold">
               {event && event.title}
             </h1>
           </div>
           <br />
           <div>
-            <p className="is-size-6">{event && event.long_description}</p>
+            <p className="is-size-7">{event && event.long_description}</p>
           </div>
         </div>
-
         <br />
-        <h1 className="is-size-3">Information</h1>
+        <br />
+        <h1 className="is-size-5">Information</h1>
         <br />
 
         <div className="columns is-flex-wrap-wrap">
@@ -154,7 +154,7 @@ const Event = ({ event }) => {
                         <label className="label">{field.name}</label>
                         <div className="control field has-addons">
                           <input
-                            className="input"
+                            className="input is-small"
                             type="text"
                             placeholder={field.name}
                             value={payload[field.name] || ""}
@@ -164,7 +164,7 @@ const Event = ({ event }) => {
                           {field.check && (
                             <>
                               <input
-                                className={`input ml-2 ${
+                                className={`input is-small ml-2 ${
                                   check[field.name]
                                     ? "has-text-link"
                                     : "has-text-danger"
@@ -174,7 +174,7 @@ const Event = ({ event }) => {
                                 value={check[field.name] || "unchecked"}
                               />
                               <button
-                                className="ml-2 button is-info is-outlined"
+                                className="ml-2 button is-small is-info is-outlined"
                                 type="button"
                                 onClick={() => {
                                   fetch(field.check.endpoint)
@@ -219,7 +219,7 @@ const Event = ({ event }) => {
                   return (
                     <div className="column" key={"field-" + index}>
                       <label className="label">{field.name}</label>
-                      <div className="select is-fullwidth">
+                      <div className="select is-small is-fullwidth">
                         <select
                           onChange={(e) =>
                             setPayload({
@@ -246,7 +246,7 @@ const Event = ({ event }) => {
         </div>
 
         <br />
-        <h1 className="is-size-3">Slots</h1>
+        <h1 className="is-size-5">Slots</h1>
 
         <br />
         {selected.slot && (
@@ -268,7 +268,7 @@ const Event = ({ event }) => {
               </div>
               <div className="column">
                 <button
-                  className="button is-primary is-fullwidth has-text-weight-bold"
+                  className="button is-primary is-small is-fullwidth has-text-weight-bold"
                   onClick={handleBook}
                 >
                   BOOK
@@ -284,11 +284,11 @@ const Event = ({ event }) => {
                 key={daily.date + "-selector"}
                 className="column is-one-fifth"
               >
-                <div className="card">
+                <div className="card is-size-6">
                   <div className="card-header card-header-title">
                     {daily.date && daily.date.split("-").reverse().join("-")}
                     <span
-                      className={`tag ml-auto ${
+                      className={`tag  is-small ml-auto ${
                         new Date(daily.date).getDay() === 6
                           ? "is-info"
                           : new Date(daily.date).getDay() === 0
@@ -306,7 +306,7 @@ const Event = ({ event }) => {
                     </p>
                     <br />
                     <button
-                      className="button is-fullwidth is-outlined is-info"
+                      className="button is-small is-fullwidth is-outlined is-info"
                       onClick={() =>
                         handleSelectDaily(
                           available.getDailyAvailable(daily.date)

@@ -20,6 +20,10 @@ function MyApp({ Component, pageProps }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
+          href="~bulma-calendar/dist/css/bulma-calendar.min.css"
+          rel="stylesheet"
+        ></link>
+        <link
           href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap"
           rel="stylesheet"
         ></link>

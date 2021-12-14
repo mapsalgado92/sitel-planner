@@ -5,13 +5,23 @@ import { useAuth } from "../contexts/authContext"
 import clientPromise from "../lib/mongodb"
 import { useState } from "react"
 import Link from "next/link"
+import CompleteModal from "../components/CompleteModal"
+
+import ReactTooltip from "react-tooltip"
 
 const Admin = ({ event }) => {
   const [result, setResult] = useState([])
 
   const [searched, setSearched] = useState("")
 
+  const [lastSearch, setLastSearch] = useState("")
+
   const [values, setValues] = useState({ date: null })
+
+  const [modal, setModal] = useState({
+    active: false,
+    booking: null,
+  })
 
   const auth = useAuth()
 
@@ -27,15 +37,62 @@ const Admin = ({ event }) => {
       .then((res) => res.json())
       .then((data) => {
         setResult(data.result)
-
+        setLastSearch({ type, field, value })
         setSearched(field)
       })
       .catch()
   }
 
-  const handleCancel = () => {}
+  const handleCancel = async (booking) => {
+    //PUT Cancel
 
-  const handleComplete = () => {}
+    let url = `/api/bookings/cancel?booking=${booking._id}`
+
+    let request = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: null,
+    }
+
+    fetch(url, request)
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        alert(data.message)
+        handleSearch(lastSearch)
+      })
+      .catch()
+  }
+
+  const handleComplete = (booking, comment) => {
+    //PUT Cancel
+
+    let url = `/api/admin/complete?booking=${booking._id}`
+
+    let request = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        auth: auth,
+        comment: comment,
+      }),
+    }
+    console.log("WHAAAAAAY")
+    fetch(url, request)
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        alert(data.message)
+        handleSearch(lastSearch)
+      })
+      .catch()
+  }
 
   const handleChange = (e, field) => {
     setValues({ ...values, [field]: e.target.value })
@@ -46,7 +103,15 @@ const Admin = ({ event }) => {
       <Head>
         <title>Sitel Planner | Admin</title>
       </Head>
+
       <div className="columns">
+        <ReactTooltip />
+        <CompleteModal
+          toggle={() => setModal({ active: false, booking: null })}
+          active={modal.active}
+          booking={modal.booking}
+          complete={handleComplete}
+        />
         <div className="column box is-full-tablet is-one-third-desktop is-size-7 is-one-quarter-widescreen">
           <div className="px-2 is-size-7">
             <h1 className="is-size-6">Admin Page for {event.title}</h1>
@@ -138,13 +203,19 @@ const Admin = ({ event }) => {
         <div className="column py-0">
           <table className="table is-fullwidth is-size-7 has-text-centered">
             <thead>
-              <th>Date</th>
-              <th>Slot</th>
-              <th>Created</th>
-              <th>Status</th>
-              <th>Closed</th>
-              {event && event.fields.map((field) => <th>{field.name}</th>)}
-              <th>Actions</th>
+              <tr>
+                <th>Date</th>
+                <th>Slot</th>
+                <th>Created</th>
+                <th>Status</th>
+                <th>Closed</th>
+                {event &&
+                  event.fields.map((field, index) => (
+                    <th key={field + "-header-" + index}>{field.name}</th>
+                  ))}
+                <th>Actions</th>
+                <th>Comment</th>
+              </tr>
             </thead>
             <tbody>
               {result &&
@@ -170,8 +241,10 @@ const Admin = ({ event }) => {
                     </td>
                     <td>{booking.closed ? "TRUE" : "FALSE"}</td>
                     {event &&
-                      event.fields.map((field) => (
-                        <td>{booking.payload[field.name]}</td>
+                      event.fields.map((field, index) => (
+                        <td key={field + "-of-" + booking._id + index}>
+                          {booking.payload[field.name]}
+                        </td>
                       ))}
                     <td>
                       <Link href={`bookings/${booking._id}`}>
@@ -179,12 +252,29 @@ const Admin = ({ event }) => {
                           go to
                         </button>
                       </Link>
-                      <button className="button is-danger is-rounded is-fullwidth-mobile is-small">
+                      <button
+                        onClick={() => handleCancel(booking)}
+                        className="button is-danger is-rounded is-fullwidth-mobile is-small"
+                        disabled={booking.closed}
+                      >
                         cancel
                       </button>
-                      <button className="button is-success is-rounded is-fullwidth-mobile is-small">
+                      <button
+                        onClick={() =>
+                          setModal({ active: true, booking: booking })
+                        }
+                        disabled={booking.closed}
+                        className="button is-success is-rounded is-fullwidth-mobile is-small"
+                      >
                         complete
                       </button>
+                    </td>
+                    <td>
+                      {booking.comment ? (
+                        booking.comment
+                      ) : (
+                        <span className="has-text-danger">none</span>
+                      )}
                     </td>
                   </tr>
                 ))}

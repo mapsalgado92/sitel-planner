@@ -5,7 +5,7 @@ const EventCard = ({ event }) => {
   return (
     <div className="card">
       <div className="card-header">
-        <p className="card-header-title is-size-4">{event.title}</p>
+        <p className="card-header-title is-size-5">{event.title}</p>
       </div>
       <div className="card-image">
         <figure className="image is-3by1">
@@ -24,7 +24,7 @@ const EventCard = ({ event }) => {
 
         <Link href={`/events/${event._id}`}>
           <a>
-            <button className="button is-fullwidth is-size-5 is-info">
+            <button className="button is-fullwidth  is-info">
               {event.cta ? event.cta : "Go To Event"}
             </button>
           </a>

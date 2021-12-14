@@ -10,7 +10,7 @@ const Events = ({ events }) => {
         <title>Sitel Planner | Events</title>
       </Head>
       <div className="has-text-centered ">
-        <h1 className="title is-size-2 ">Events</h1>
+        <h1 className="title is-size-4 ">Events</h1>
         <div className="columns is-justify-content-center is-flex-wrap-wrap ">
           {events &&
             events.map((event) => (
