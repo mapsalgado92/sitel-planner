@@ -21,7 +21,7 @@ const SlotsModal = ({ active, toggle, daily, selectSlot }) => {
                   .filter((item) => item !== "date")
                   .sort()
                   .map((time) => (
-                    <tr>
+                    <tr key={"row-" + time}>
                       <td className="is-size-5">{time.slice(0, 5)}</td>
                       <td
                         className={`is-size-5 ${

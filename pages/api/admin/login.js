@@ -21,11 +21,19 @@ export default async function handler(req, res) {
         loginEvent ? loginEvent.password : "x"
       )
       if (compare) {
-        res.status(200).json({ message: "Login successful!", logged: true })
+        res.status(200).json({
+          message: "Login successful!",
+          logged: true,
+          user: { id: loginEvent._id, name: loginEvent.title },
+        })
       } else {
         res
           .status(200)
-          .json({ message: "Credentials incorrect!", logged: false })
+          .json({
+            message: "Credentials incorrect!",
+            logged: false,
+            user: null,
+          })
       }
     } else {
       res.status(401).json({ message: "Bad Request!" })

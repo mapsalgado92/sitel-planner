@@ -47,10 +47,13 @@ const Header = () => {
           <Link href="/events">
             <a className="navbar-item ml-3 is-size-5">Events</a>
           </Link>
-          {auth.logged && (
+          {auth.user && (
             <Link href={"/admin/" + auth.user.id}>
               <a className="navbar-item ml-3 is-danger is-size-5">
-                Admin {auth.user.id}
+                Admin
+                <span className="is-size-6 ml-2 has-text-link">
+                  {auth.user.name}
+                </span>
               </a>
             </Link>
           )}

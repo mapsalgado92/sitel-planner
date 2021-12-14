@@ -11,11 +11,14 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     let cookie = Cookies.get("user")
-    console.log(cookie)
+
     if (cookie) {
       console.log("did it do this?")
       setUser(JSON.parse(cookie))
       setLogged(true)
+      console.log("LOGGED IN FROM COOKIE")
+    } else {
+      console.log("NO COOKIE")
     }
   }, [])
 
@@ -36,8 +39,9 @@ export const AuthProvider = ({ children }) => {
       .then((response) => response.json())
       .then((data) => {
         setLogged(data.logged)
-        setUser({ id: event })
-        Cookies.set("user", JSON.stringify({ id: event }), { expires: 1 })
+        console.log("DATA USER", data.user)
+        setUser(data.user)
+        Cookies.set("user", JSON.stringify(data.user), { expires: 1 })
         alert(data.message)
       })
       .catch((err) => alert("Something went wrong!"))
