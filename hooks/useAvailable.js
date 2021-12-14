@@ -42,7 +42,7 @@ const useAvailable = (event) => {
 
     sDaily &&
       Object.keys(sDaily).forEach((key) => {
-        total += key === "date" ? 0 : sDaily[key]
+        total += key === "date" ? 0 : sDaily[key] > 0 ? sDaily[key] : 0
       })
 
     return total
