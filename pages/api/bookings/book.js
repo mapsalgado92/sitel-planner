@@ -9,6 +9,9 @@ export default async function handler(req, res) {
 
   if (method === "POST") {
     let event = body.event
+    let auth = body.auth
+
+    let authCheck = auth ? event._id === auth.user.id : false
 
     if (!event) {
       console.log("NO EVENT")
@@ -39,7 +42,7 @@ export default async function handler(req, res) {
       new Date().getTime() + event.buffer * 60 * 60 * 1000
     ).toISOString()
 
-    if (date > bufferTime) {
+    if (date > bufferTime || authCheck) {
       verify.time = true
       console.log("Valid Time")
     } else {
@@ -68,7 +71,7 @@ export default async function handler(req, res) {
 
     console.log("BOOKED", booked, "/", slots)
 
-    if (!slots || booked >= slots) {
+    if (!slots || (booked >= slots && !authCheck)) {
       verify.availability = false
       verify.global = false
       console.log("Invalid Slot")
@@ -114,7 +117,7 @@ export default async function handler(req, res) {
         delivered: null,
         status: "booked",
         event: event._id,
-        process: "book",
+        process: authCheck ? "admin-book" : "book",
         date: date,
       }
 

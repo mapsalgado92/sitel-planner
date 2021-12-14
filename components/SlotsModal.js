@@ -1,4 +1,8 @@
-const SlotsModal = ({ active, toggle, daily, selectSlot }) => {
+import { useAuth } from "../contexts/authContext"
+
+const SlotsModal = ({ active, toggle, daily, selectSlot, eventId }) => {
+  const auth = useAuth()
+
   return (
     <div className={`modal has-text-centered ${active ? "is-active" : ""}`}>
       <div className="modal-background"></div>
@@ -33,7 +37,10 @@ const SlotsModal = ({ active, toggle, daily, selectSlot }) => {
                       <td>
                         <button
                           className="button is-primary is-fullwidth"
-                          disabled={daily[time] <= 0}
+                          disabled={
+                            daily[time] <= 0 &&
+                            !(auth.user && auth.user.id === eventId)
+                          }
                           onClick={() => {
                             selectSlot(daily.date + "T" + time)
                           }}

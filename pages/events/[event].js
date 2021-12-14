@@ -6,11 +6,13 @@ import SlotsModal from "../../components/SlotsModal"
 
 import clientPromise from "../../lib/mongodb"
 import { useRouter } from "next/router"
+import { useAuth } from "../../contexts/authContext"
 
 const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
 const Event = ({ event }) => {
   const router = useRouter()
+  const auth = useAuth()
 
   const [payload, setPayload] = useState({})
 
@@ -61,6 +63,7 @@ const Event = ({ event }) => {
       event,
       payload,
       date: selected.slot,
+      auth: { user: auth.user, logged: auth.logged },
     }
 
     let request = {
@@ -122,6 +125,7 @@ const Event = ({ event }) => {
           active={selected.daily !== null}
           toggle={() => setSelected({ ...selected, daily: null })}
           selectSlot={(slot) => setSelected({ daily: null, slot: slot })}
+          eventId={event._id}
         ></SlotsModal>
         <div className="card has-background-link-dark has-text-white p-6">
           <div className=" is-justify-content-center">
