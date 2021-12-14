@@ -90,7 +90,7 @@ export default async function handler(req, res) {
 
     let unique = await database
       .collection("bookings")
-      .find({ closed: false, $or: payloadQueries })
+      .find({ status: { $ne: "cancelled" }, $or: payloadQueries })
       .toArray()
 
     console.log("UNIQUE", unique)
