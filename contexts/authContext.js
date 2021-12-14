@@ -1,13 +1,14 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { useCookies } from "react-cookie"
 import Cookies from "js-cookie"
+import { route } from "next/dist/server/router"
 
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [logged, setLogged] = useState(false)
   const [user, setUser] = useState({})
+  const router = useRouter()
 
   useEffect(() => {
     let cookie = Cookies.get("user")
@@ -21,8 +22,6 @@ export const AuthProvider = ({ children }) => {
       console.log("NO COOKIE")
     }
   }, [])
-
-  const router = useRouter()
 
   const login = async ({ event, password }) => {
     const request = {
@@ -43,6 +42,9 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user)
         Cookies.set("user", JSON.stringify(data.user), { expires: 1 })
         alert(data.message)
+        if (data.logged) {
+          router.push(`/admin?user=${data.user.id}`)
+        }
       })
       .catch((err) => alert("Something went wrong!"))
   }

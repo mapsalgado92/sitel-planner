@@ -12,7 +12,7 @@ const Login = ({ events }) => {
   return (
     <>
       <Head>
-        <title>Sitel Planner | Booking</title>
+        <title>Sitel Planner | Login</title>
       </Head>
       <div className="mt-auto mb-auto">
         <div className="columns">

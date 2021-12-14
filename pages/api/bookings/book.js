@@ -61,13 +61,8 @@ export default async function handler(req, res) {
 
     let booked = await database
       .collection("bookings")
-      .find({ event: event._id, date: date, status: { $ne: "cancelled" } })
+      .find({ event: event._id, date: date, closed: false })
       .count()
-
-    let bookedArray = await database
-      .collection("bookings")
-      .find({ event: event._id, date: date })
-      .toArray()
 
     console.log("BOOKED", booked, "/", slots)
 
