@@ -47,7 +47,7 @@ const Header = () => {
           <Link href="/events">
             <a className="navbar-item ml-3 is-size-5">Events</a>
           </Link>
-          {auth.user && (
+          {auth.user && auth.logged && (
             <Link href={"/admin/" + auth.user.id}>
               <a className="navbar-item ml-3 is-danger is-size-5">
                 Admin
