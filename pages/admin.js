@@ -67,10 +67,32 @@ const Admin = ({ event }) => {
       .catch()
   }
 
-  const handleComplete = (booking, comment) => {
-    //PUT Cancel
+  const handleComplete = async (booking, comment) => {
+    //PUT
 
     let url = `/api/admin/complete?booking=${booking._id}`
+
+    ////Complete message check (Temporary?)/////////////
+    if (event.completeCheck) {
+      fetch(event.completeCheck.endpoint)
+        .then((res) => res.json())
+        .then((data) => {
+          let match = data.find(
+            (entry) =>
+              entry[event.completeCheck.key] ===
+              booking.payload[event.completeCheck.field]
+          )
+          console.log("MATCH", match)
+          if (match) {
+            alert(
+              "Complete Check Message\n" +
+                JSON.stringify(match, null, 2).slice(1, -1)
+            )
+          }
+        })
+        .catch((err) => console.log(err))
+    }
+    ////////////////////////////////////////////////////
 
     let request = {
       method: "PUT",
@@ -82,7 +104,7 @@ const Admin = ({ event }) => {
         comment: comment,
       }),
     }
-    console.log("WHAAAAAAY")
+
     fetch(url, request)
       .then((response) => {
         return response.json()
@@ -258,7 +280,7 @@ const Admin = ({ event }) => {
                     <td>{booking.process}</td>
                     <td>
                       <div
-                        className={`tag is-small ${
+                        className={`tag is-small p-1 ${
                           booking.status === "booked"
                             ? "is-primary"
                             : booking.status === "cancelled"
