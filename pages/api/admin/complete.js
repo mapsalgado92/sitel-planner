@@ -42,6 +42,7 @@ export default async function handler(req, res) {
                 status: "completed",
                 closed: true,
                 comment: comment ? comment : null,
+                closed_date: new Date().toISOString(),
               },
             }
           )

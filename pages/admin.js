@@ -7,7 +7,7 @@ import { useState } from "react"
 import Link from "next/link"
 import CompleteModal from "../components/CompleteModal"
 
-import ReactTooltip from "react-tooltip"
+import { jsonToCSV } from "react-papaparse"
 
 const Admin = ({ event }) => {
   const [result, setResult] = useState([])
@@ -33,7 +33,7 @@ const Admin = ({ event }) => {
       },
       body: JSON.stringify({ search: { type, field, value }, auth: auth }),
     }
-    let bookings = await fetch(`/api/admin/search?event=${event._id}`, request)
+    fetch(`/api/admin/search?event=${event._id}`, request)
       .then((res) => res.json())
       .then((data) => {
         setResult(data.result)
@@ -105,7 +105,6 @@ const Admin = ({ event }) => {
       </Head>
 
       <div className="columns">
-        <ReactTooltip />
         <CompleteModal
           toggle={() => setModal({ active: false, booking: null })}
           active={modal.active}
@@ -198,6 +197,31 @@ const Admin = ({ event }) => {
             >
               Reset
             </button>
+            {result && (
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => {
+                  let flattened = result.map((booking) => {
+                    let object = JSON.parse(
+                      JSON.stringify({
+                        ...booking,
+                        ["closed_date"]: booking["closed_date"] || "n/a",
+                        comment: booking.comment || "n/a",
+                        ...booking.payload,
+                      })
+                    )
+                    delete object.payload
+                    return object
+                  })
+
+                  let csv = jsonToCSV(flattened)
+                  console.log(csv)
+                  navigator.clipboard.writeText(`${csv.replaceAll(",", "\t")}`)
+                }}
+              >
+                Copy to Clipboard
+              </button>
+            )}
           </div>
         </div>
         <div className="column py-0">
@@ -207,8 +231,10 @@ const Admin = ({ event }) => {
                 <th>Date</th>
                 <th>Slot</th>
                 <th>Created</th>
+                <th>Process</th>
                 <th>Status</th>
                 <th>Closed</th>
+                <th>Closed Date</th>
                 {event &&
                   event.fields.map((field, index) => (
                     <th key={field + "-header-" + index}>{field.name}</th>
@@ -224,6 +250,7 @@ const Admin = ({ event }) => {
                     <td>{booking.date.slice(0, 10)}</td>
                     <td>{booking.date.slice(11, 16)}</td>
                     <td>{booking.created.slice(0, -8)}</td>
+                    <td>{booking.process}</td>
                     <td>
                       <div
                         className={`tag is-small ${
@@ -240,6 +267,11 @@ const Admin = ({ event }) => {
                       </div>
                     </td>
                     <td>{booking.closed ? "TRUE" : "FALSE"}</td>
+                    <td>
+                      {booking.closed_date
+                        ? booking.closed_date.slice(0, -8)
+                        : "n/a"}
+                    </td>
                     {event &&
                       event.fields.map((field, index) => (
                         <td key={field + "-of-" + booking._id + index}>
@@ -247,14 +279,14 @@ const Admin = ({ event }) => {
                         </td>
                       ))}
                     <td>
-                      <Link href={`bookings/${booking._id}`}>
-                        <button className="button is-info is-rounded is-fullwidth-mobile is-small">
+                      <a href={`bookings/${booking._id}`} target="_blank">
+                        <button className="button is-info is-rounded is-fullwidth-mobile is-small p-1">
                           go to
                         </button>
-                      </Link>
+                      </a>
                       <button
                         onClick={() => handleCancel(booking)}
-                        className="button is-danger is-rounded is-fullwidth-mobile is-small"
+                        className="button is-danger is-rounded is-fullwidth-mobile is-small p-1"
                         disabled={booking.closed}
                       >
                         cancel
@@ -264,7 +296,7 @@ const Admin = ({ event }) => {
                           setModal({ active: true, booking: booking })
                         }
                         disabled={booking.closed}
-                        className="button is-success is-rounded is-fullwidth-mobile is-small"
+                        className="button is-success is-rounded is-fullwidth-mobile is-small p-1"
                       >
                         complete
                       </button>

@@ -25,12 +25,16 @@ export default async function handler(req, res) {
 
     if (booking && !booking.closed) {
       try {
-        const update = await database
-          .collection("bookings")
-          .updateOne(
-            { _id: ObjectId(bookingId) },
-            { $set: { status: "cancelled", closed: true } }
-          )
+        const update = await database.collection("bookings").updateOne(
+          { _id: ObjectId(bookingId) },
+          {
+            $set: {
+              status: "cancelled",
+              closed: true,
+              closed_date: new Date().toISOString(),
+            },
+          }
+        )
         res
           .status(200)
           .json({ message: "Booking successfully canceled!", update })
