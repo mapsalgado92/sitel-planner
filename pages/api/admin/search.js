@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         return -1
       } else {
         try {
-          let searchQuery = { event: ObjectId(eventId) }
+          let searchQuery = { event: eventId }
           if (search.type === "date") {
             searchQuery = { ...searchQuery, date: { $regex: search.value } }
             console.log("DATE QUERY", searchQuery)
