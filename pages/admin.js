@@ -187,41 +187,46 @@ const Admin = ({ event }) => {
                   </div>
                 </div>
               ))}
-            <button
-              className="button is-black is-small"
-              onClick={() => {
-                setSearched("")
-                setValues({ date: null })
-                setResult([])
-              }}
-            >
-              Reset
-            </button>
-            {result && (
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() => {
-                  let flattened = result.map((booking) => {
-                    let object = JSON.parse(
-                      JSON.stringify({
-                        ...booking,
-                        ["closed_date"]: booking["closed_date"] || "n/a",
-                        comment: booking.comment || "n/a",
-                        ...booking.payload,
-                      })
-                    )
-                    delete object.payload
-                    return object
-                  })
 
-                  let csv = jsonToCSV(flattened)
-                  console.log(csv)
-                  navigator.clipboard.writeText(`${csv.replaceAll(",", "\t")}`)
+            <div className="buttons">
+              <button
+                className="button is-black is-small"
+                onClick={() => {
+                  setSearched("")
+                  setValues({ date: null })
+                  setResult([])
                 }}
               >
-                Copy to Clipboard
+                Reset
               </button>
-            )}
+              {result.length > 0 && (
+                <button
+                  className="button is-small"
+                  onClick={() => {
+                    let flattened = result.map((booking) => {
+                      let object = JSON.parse(
+                        JSON.stringify({
+                          ...booking,
+                          ["closed_date"]: booking["closed_date"] || "n/a",
+                          comment: booking.comment || "n/a",
+                          ...booking.payload,
+                        })
+                      )
+                      delete object.payload
+                      return object
+                    })
+
+                    let csv = jsonToCSV(flattened)
+                    console.log(csv)
+                    navigator.clipboard.writeText(
+                      `${csv.replaceAll(",", "\t")}`
+                    )
+                  }}
+                >
+                  Copy to Clipboard
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div className="column py-0">
