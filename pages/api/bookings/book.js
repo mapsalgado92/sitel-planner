@@ -66,7 +66,7 @@ export default async function handler(req, res) {
 
     console.log("BOOKED", booked, "/", slots)
 
-    if (!slots || (booked >= slots && !authCheck)) {
+    if (booked >= slots && !authCheck) {
       verify.availability = false
       verify.global = false
       console.log("Invalid Slot")
